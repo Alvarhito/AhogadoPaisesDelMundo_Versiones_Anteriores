@@ -8,6 +8,7 @@ import android.app.Activity
 import android.util.Log
 import android.content.Intent
 import android.graphics.LinearGradient
+import android.util.LogPrinter
 import android.widget.*
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -27,21 +28,50 @@ class MainActivity : AppCompatActivity(), View.OnClickListener{
         setContentView(R.layout.activity_main)
         setBtn()
         init()
+
+        Menu2.setOnClickListener{
+            val boton_vs = Intent(this, Main2Activity::class.java)
+            startActivity(boton_vs)
+        }
+        Menu.setOnClickListener{
+            val boton_vs = Intent(this, Main2Activity::class.java)
+            startActivity(boton_vs)
+        }
+        Reiniciar.setOnClickListener{
+            val boton_vs = Intent(this, MainActivity::class.java)
+            startActivity(boton_vs)
+            super.onDestroy()
+        }
+        Ayuda.setOnClickListener{
+            Ayuda.isEnabled=false
+            ayudando()
+            verificaGano()
+        }
+    }
+    fun ayudando(){
+        val ra = Random()
+        var VRam=ra.nextInt((numL[num]-1) - 0)
+        //var VRam=numL[num]-1
+
+        var aux=true
+        while(aux){
+            aux=false
+            for(i in 0..numL[num]-1){
+                //Log.d("TextView",textviews[i].text.toString())
+                if(textviews[i].getText().toString() == letter[num][VRam]+" "){
+                    aux=true
+                    VRam=ra.nextInt((numL[num]-1) - 0)
+                    break;
+                }
+
+            }
+        }
+        textviews[VRam].text=letter[num][VRam]+" "
+        termino+=1
     }
     fun init(){
 
         val For_Letter = ForLetter as LinearLayout
-        /*
-        val winL = youwintext as TextView
-        val venI = VenI as ImageView
-
-        val loseL = youlosetext as TextView
-
-        venI.visibility=View.INVISIBLE
-        winL.visibility=View.INVISIBLE
-
-        loseL.visibility=View.INVISIBLE*/
-
         for(i in 0..numL[num]-1){
             val tv_dynamic = TextView(this)
             tv_dynamic.textSize = 30f
@@ -59,22 +89,29 @@ class MainActivity : AppCompatActivity(), View.OnClickListener{
             if(b.getText().toString()==letter[num][i]){
                 textviews[i].text = b.getText().toString()+" "
                 entro=true
-                termino=termino+1
+                termino+=1
+
             }
         }
         if(entro==false){
-            var vidas= Vidas as TextView
-            NumVidas=NumVidas-1
-            vidas.text="Vidas: "+NumVidas.toString()
-            if(NumVidas<=0){
-                val loseL = youlosetext as TextView
-                val venI = VenI as ImageView
-                venI.visibility=View.VISIBLE
-                loseL.visibility=View.VISIBLE
-                Buttonoff()
-            }
-
+            verificaPerdio()
         }
+        verificaGano()
+    }
+    fun verificaPerdio(){
+        var vidas= Vidas as TextView
+        NumVidas=NumVidas-1
+        vidas.text="Vidas: "+NumVidas.toString()
+        if(NumVidas<=0){
+            val loseL = youlosetext as TextView
+            val venI = VenI as ImageView
+            venI.visibility=View.VISIBLE
+            loseL.visibility=View.VISIBLE
+            Buttonoff()
+        }
+    }
+
+    fun verificaGano(){
         if(termino==numL[num]){
             val winL = youwintext as TextView
             val venI = VenI as ImageView
@@ -82,11 +119,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener{
             winL.visibility=View.VISIBLE
             Buttonoff()
         }
-
     }
+
     fun Buttonoff(){
         val menu = Menu as Button
         val ayuda = Ayuda as Button
+        val For_Letterabc = LetrasABC as LinearLayout
 
         val menu2 = Menu2 as Button
         val reiniciar = Reiniciar as Button
@@ -96,7 +134,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener{
 
         menu2.visibility=View.VISIBLE
         reiniciar.visibility=View.VISIBLE
+
+        For_Letterabc.visibility=View.INVISIBLE
     }
+
     fun setBtn() {
         buttonA.setOnClickListener(this)
         buttonB.setOnClickListener(this)

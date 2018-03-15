@@ -4,15 +4,24 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import java.util.Random
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
+import com.example.ceisutb01.ahogadopaisesdelmundo.Pais
+import com.example.ceisutb01.ahogadopaisesdelmundo.VolleySingleton
 import android.app.Activity
 import android.util.Log
 import android.content.Intent
+import android.widget.Toast
 import android.graphics.LinearGradient
 import android.util.LogPrinter
 import android.widget.*
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), View.OnClickListener{
+
+    private val pk = Pais()
+
     val letter=arrayOf(arrayOf("C","O","L","O","M","B","I","A"),arrayOf("V","E","N","E","Z","U","E","L","A"),arrayOf("A","F","G","A","N","I","S","T","A","N"),arrayOf("A","N","G","O","L","A"),arrayOf("A","L","B","A","N","I","A"),arrayOf("B","A","N","G","L","A","D","E","S","H"),arrayOf("B","U","L","G","A","R","I","A"),arrayOf("C","A","M","E","R","U","N"),arrayOf("C","H","I","P","R","E"),arrayOf("E","T","I","O","P","I","A"),arrayOf("F","I","L","I","P","I","N","A","S"),arrayOf("G","U","A","T","E","M","A","L","A"),arrayOf("J","O","R","D","A","N","I","A"),arrayOf("K","E","N","Y","A"),arrayOf("K","U","W","A","I","T"),arrayOf("L","I","B","E","R","I","A"),arrayOf("L","U","X","E","M","B","U","R","G","O"),arrayOf("M","A","U","R","I","C","I","O"),arrayOf("P","A","K","I","S","T","A","N"),arrayOf("P","A","R","A","G","U","A","Y"),arrayOf("R","U","M","A","N","I","A"),arrayOf("S","I","N","G","A","P","U","R"),arrayOf("S","U","R","I","N","A","M"),arrayOf("Y","U","G","O","S","L","A","V","I","A"),arrayOf("M","O","Z","A","M","B","I","Q","U","E"),arrayOf("O","M","A","N"))
     val numL= arrayOf(                                8,                                    9,                                       10,                        6,                            7,                                       10,                                8,                            7,                        6,                            7,                                    9,                                    9,                                8,                    5,                        6,                            7,                                       10,                                8,                                8,                                8,                            7,                                8,                            7,                                       10,                                       10,                4)
     /*val words= arrayOf(("COLOMBIA")                     ,("VENEZUELA")                        ,("AFGANISTAN")                           ,("ANGOLA")               ,("ALBANIA")                  ,("BANGLADESH")                           ,("BULGARIA")                     ,("CAMERUN")                  ,("CHIPRE")               ,("ETIOPIA")                  ,("FILIPINAS")                        ,("GUATEMALA")                        ,("JORDANIA")                     ,("KENIA")            ,("KUWAIT")               ,("LIBERIA")                  ,("LUXEMBURGO")                           ,("MAURICIO")                     ,("PAKISTAN")                     ,("PARAGUAY")                     ,("RUMANIA")                  ,("SINGAPUR")                     ,("SURINAM")                  ,("YUGOSLAVIA")                           ,("MOZAMBIQUE")                           ,("OMAN")         )*/
@@ -22,20 +31,26 @@ class MainActivity : AppCompatActivity(), View.OnClickListener{
     var textviews = ArrayList<TextView>()
     var termino=0
     var NumVidas=7
+    var Tpuntos=0
+    var auxPuntos=5
+    var nombre="hola"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setBtn()
+        selectPais()
         init()
 
         Menu2.setOnClickListener{
             val boton_vs = Intent(this, Main2Activity::class.java)
             startActivity(boton_vs)
+            super.onDestroy()
         }
         Menu.setOnClickListener{
             val boton_vs = Intent(this, Main2Activity::class.java)
             startActivity(boton_vs)
+            super.onDestroy()
         }
         Reiniciar.setOnClickListener{
             val boton_vs = Intent(this, MainActivity::class.java)
@@ -48,7 +63,43 @@ class MainActivity : AppCompatActivity(), View.OnClickListener{
             verificaGano()
         }
     }
+    fun selectPais(){
+        //val ran = (Math.random() * 500).toInt()
+
+        val url = "https://restcountries.eu/rest/v2/all?fields=translations"
+
+        getJson(url)
+    }
+
+    fun getJson(url: String) {
+        val jsObjRequest = JsonObjectRequest(Request.Method.GET, url, null, Response.Listener { response ->
+            //enviando JSON a la clase pokemon y devolviendo un informacion.
+
+            nombre=pk.getName(response)
+            //val image = pk.getImage_Front(response)
+            //val imageBack = pk.getImage_Back(response)
+
+
+           // println("¡¡HERE!! : " +imageBack)
+
+        }, Response.ErrorListener {
+            // TODO Auto-generated method stub
+            Toast.makeText(this," Ups, no hay conexion.",
+                    Toast.LENGTH_LONG).show()
+        })
+
+
+        // Access the RequestQueue through your singleton class.
+        VolleySingleton.instance?.addToRequestQueue(jsObjRequest)
+    }
+
+
+
+
+
+
     fun ayudando(){
+        print("hola mundo")
         val ra = Random()
         var VRam=ra.nextInt((numL[num]-1) - 0)
         //var VRam=numL[num]-1
@@ -79,6 +130,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener{
             For_Letter.addView(tv_dynamic)
             textviews.add(tv_dynamic)
         }
+        textviews[0].text=nombre
 
     }
     override fun onClick(v: View) {
@@ -87,6 +139,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener{
         var entro=false
         for(i in 0..numL[num]-1){
             if(b.getText().toString()==letter[num][i]){
+
                 textviews[i].text = b.getText().toString()+" "
                 entro=true
                 termino+=1
@@ -95,6 +148,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener{
         }
         if(entro==false){
             verificaPerdio()
+            auxPuntos=5;
+        }else{
+            var puntitos= Puntos as TextView
+            Tpuntos+=auxPuntos
+            puntitos.text="Puntos: "+Tpuntos.toString()
+            auxPuntos+=5
         }
         verificaGano()
     }
@@ -132,8 +191,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener{
         menu.visibility=View.INVISIBLE
         ayuda.visibility=View.INVISIBLE
 
-        menu2.visibility=View.VISIBLE
-        reiniciar.visibility=View.VISIBLE
+        menu2.visibility     =View.VISIBLE
+        reiniciar.visibility =View.VISIBLE
 
         For_Letterabc.visibility=View.INVISIBLE
     }

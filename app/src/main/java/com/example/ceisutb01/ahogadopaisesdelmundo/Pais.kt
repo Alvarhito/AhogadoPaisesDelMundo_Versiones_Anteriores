@@ -1,9 +1,9 @@
 package com.example.ceisutb01.ahogadopaisesdelmundo
-import android.R.attr.name
+import com.github.kittinunf.fuel.android.core.Json
 import org.json.JSONException
 import org.json.JSONObject
-import android.R.attr.data
-import android.widget.Toast
+import com.github.kittinunf.fuel.core.FuelError
+import com.github.kittinunf.result.Result
 
 
 class Pais {
@@ -15,9 +15,9 @@ class Pais {
 
     private var image: JSONObject? = null
 
-    fun getName(info: JSONObject): String {
+    fun getName(info: Json): String {
         try {
-            name = info.getString("translations").toString()
+            name = info.content
         } catch (e: JSONException) {
             return "No hay nada"
             e.printStackTrace()

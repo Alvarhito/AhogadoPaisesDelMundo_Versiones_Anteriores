@@ -20,7 +20,8 @@ class Pais {
 
     fun getName(info: Json): String {
         try {
-            image =info.array().getJSONObject(1)
+            val num=(Math.random() * 100).toInt()
+            image =info.array().getJSONObject(num)
             return image.getJSONObject("translations").getString("es")
             //val ints2 = gson.fromJson("translations", Array<String>::class.java)
             //name=ints2[0].toString()

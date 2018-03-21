@@ -4,6 +4,9 @@ import org.json.JSONException
 import org.json.JSONObject
 import com.github.kittinunf.fuel.core.FuelError
 import com.github.kittinunf.result.Result
+import com.google.gson.Gson
+import android.util.Log
+import org.json.JSONArray
 
 
 class Pais {
@@ -13,20 +16,21 @@ class Pais {
     private var back_default_url: String? = null
     private var info_Sprites: JSONObject? = null
 
-    private var image: JSONObject? = null
+    private var image: JSONObject = JSONObject()
 
     fun getName(info: Json): String {
         try {
-            name = info.content
+            image =info.array().getJSONObject(1)
+            return image.getJSONObject("translations").getString("es")
+            //val ints2 = gson.fromJson("translations", Array<String>::class.java)
+            //name=ints2[0].toString()
         } catch (e: JSONException) {
             return "No hay nada"
             e.printStackTrace()
         }
-
-        return name.toString()
     }
 
-    private fun getSprites(info: JSONObject): JSONObject? {
+    /*private fun getSprites(info: JSONObject): JSONObject? {
         info_Sprites = null
         try {
             info_Sprites = info.getJSONObject("sprites")
@@ -36,6 +40,7 @@ class Pais {
 
         return info_Sprites
     }
+
 
     fun getImage_Front(info: JSONObject): String? {
 
@@ -74,5 +79,5 @@ class Pais {
         return back_default_url
     }
 
-
+*/
 }

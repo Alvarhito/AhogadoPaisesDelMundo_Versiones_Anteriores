@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import java.util.Random
 import android.app.Activity
+import android.content.Context
 import android.util.Log
 import android.content.Intent
 import android.widget.*
@@ -14,6 +15,9 @@ import android.widget.TextView
 import com.github.kittinunf.fuel.android.extension.responseJson
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.Result
+import com.github.kittinunf.result.getAs
+import org.json.JSONArray
+import org.json.JSONObject
 
 class MainActivity : Activity(), View.OnClickListener {
 
@@ -30,7 +34,7 @@ class MainActivity : Activity(), View.OnClickListener {
     var NumVidas = 7
     var Tpuntos = 0
     var auxPuntos = 5
-    var nombre = " "
+    var nombre = String()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,16 +92,22 @@ class MainActivity : Activity(), View.OnClickListener {
         Log.d("depuracion","getJson")
 
         //an extension over string (support GET, PUT, POST, DELETE with httpGet(), httpPut(), httpPost(), httpDelete())
-        url.httpGet().responseJson { request, response, result ->
+        url.httpGet().responseJson{ request, response, result ->
             //do something with response
             when (result) {
                 is Result.Failure -> {
                     val ex = result.getException()
+                    Toast.makeText(this," Error",Toast.LENGTH_LONG).show()
                 }
                 is Result.Success -> {
+
                     val data = result.get()
                     Log.d("data", data.toString())
-                    nombre=Country.getName(data)
+                    var prueba= Prueba as TextView
+                    nombre= Country.getName(data)
+                    prueba.text=nombre
+                    Toast.makeText(this,nombre.toString(),Toast.LENGTH_LONG).show()
+
                 }
             }
         }

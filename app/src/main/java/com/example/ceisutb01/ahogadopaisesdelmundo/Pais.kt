@@ -6,6 +6,9 @@ import com.github.kittinunf.fuel.core.FuelError
 import com.github.kittinunf.result.Result
 import com.google.gson.Gson
 import android.util.Log
+import android.widget.TextView
+import android.widget.Toast
+import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONArray
 
 
@@ -17,12 +20,23 @@ class Pais {
     private var info_Sprites: JSONObject? = null
 
     private var image: JSONObject = JSONObject()
+    private var pais:String= String()
 
     fun getName(info: Json): String {
         try {
-            val num=(Math.random() * 100).toInt()
-            image =info.array().getJSONObject(num)
-            return image.getJSONObject("translations").getString("es")
+            while(true){
+
+                val num=(Math.random() * 250).toInt()
+                image =info.array().getJSONObject(num)
+                pais=image.getJSONObject("translations").getString("es")
+
+                if(pais.contains(" ")) {
+                    continue
+                }else{
+                    break
+                }
+            }
+            return pais
             //val ints2 = gson.fromJson("translations", Array<String>::class.java)
             //name=ints2[0].toString()
         } catch (e: JSONException) {

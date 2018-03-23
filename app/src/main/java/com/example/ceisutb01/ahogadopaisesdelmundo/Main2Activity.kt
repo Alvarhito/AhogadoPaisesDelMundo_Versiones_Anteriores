@@ -82,6 +82,10 @@ class Main2Activity : AppCompatActivity() {
                     val boton_vs = Intent(this, MainActivity::class.java)
                     boton_vs.putExtra("Pais", nombre)
                     boton_vs.putExtra("Reiniciar", "false")
+                    boton_vs.putExtra("Lista1",Country.nivel1)
+                    boton_vs.putExtra("Lista2",Country.nivel2)
+                    boton_vs.putExtra("Lista3",Country.nivel3)
+                    boton_vs.putExtra("Lista4",Country.nivel4)
                     startActivity(boton_vs)
                 }
             }

@@ -32,6 +32,11 @@ class MainActivity : Activity(), View.OnClickListener {
     var auxPuntos = 5
     var Palabra=letter[num]
 
+    var nivel1 = ArrayList<nation>()
+    var nivel2 = ArrayList<nation>()
+    var nivel3 = ArrayList<nation>()
+    var nivel4 = ArrayList<nation>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -55,7 +60,11 @@ class MainActivity : Activity(), View.OnClickListener {
 
             num = (random.nextInt(final - inicial))+inicial
             nombre=letter[num]
-
+        }else{
+            nivel1= intent.extras!!.getSerializable("Lista1") as ArrayList<nation>
+            nivel2= intent.extras!!.getSerializable("Lista2") as ArrayList<nation>
+            nivel3= intent.extras!!.getSerializable("Lista3") as ArrayList<nation>
+            nivel4= intent.extras!!.getSerializable("Lista4") as ArrayList<nation>
         }
 
         if(nombre=="No hay nada"){

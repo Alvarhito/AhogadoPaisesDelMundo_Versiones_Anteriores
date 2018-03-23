@@ -22,6 +22,7 @@ class Pais {
     var nivel2 = ArrayList<nation>()
     var nivel3 = ArrayList<nation>()
     var nivel4 = ArrayList<nation>()
+    var mmm="vainarara"
 
     private var image: JSONObject = JSONObject()
     private var pais:String= String()
@@ -78,9 +79,10 @@ class Pais {
         i4=0
 
     }
-    fun getName(info: Json): String {
-
-        try {
+    fun getName(): String {
+        val num=(Math.random() * nivel1.size).toInt()
+        return nivel1[num].name
+        /*try {
             while(true){
 
                 val num=(Math.random() * 250).toInt()
@@ -99,7 +101,7 @@ class Pais {
         } catch (e: JSONException) {
             return "No hay nada"
             e.printStackTrace()
-        }
+        }*/
     }
 
     /*private fun getSprites(info: JSONObject): JSONObject? {

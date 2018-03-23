@@ -31,6 +31,9 @@ class MainActivity : Activity(), View.OnClickListener {
     var Tpuntos = 0
     var auxPuntos = 5
     var Palabra=letter[num]
+    var nombre=""
+
+    var conInternet=false
 
     var nivel1 = ArrayList<nation>()
     var nivel2 = ArrayList<nation>()
@@ -41,13 +44,21 @@ class MainActivity : Activity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        var nombre =intent.extras.getString("Pais")
+        nombre =intent.extras.getString("Pais")
 
         var prueba= Prueba as TextView
 
-        var reiniciar=intent.extras.getString("Reiniciar")
+        var reiniciar=intent.extras.getBoolean("Reiniciar")
 
-        if(reiniciar=="true"){
+        if(nombre!="No hay nada"){
+            nivel1= intent.getSerializableExtra("Lista1") as ArrayList<nation>
+            nivel2= intent.getSerializableExtra("Lista2") as ArrayList<nation>
+            nivel3= intent.getSerializableExtra("Lista3") as ArrayList<nation>
+            nivel4= intent.getSerializableExtra("Lista4") as ArrayList<nation>
+        }
+
+
+        if(reiniciar){
             inicial=intent.extras.getInt("Init")
             final=intent.extras.getInt("End")
             Tpuntos=intent.extras.getInt("Score")
@@ -57,20 +68,26 @@ class MainActivity : Activity(), View.OnClickListener {
             puntitos.text = "Puntos: " + Tpuntos.toString()
             prueba.text=Tpuntos.toString()
 
+            if(inicial>=60){
+                prueba.text="Felicidades, Ganaste el juego"
+                onStop()
+            }
 
-            num = (random.nextInt(final - inicial))+inicial
-            nombre=letter[num]
-        }else{
-            nivel1= intent.extras!!.getSerializable("Lista1") as ArrayList<nation>
-            nivel2= intent.extras!!.getSerializable("Lista2") as ArrayList<nation>
-            nivel3= intent.extras!!.getSerializable("Lista3") as ArrayList<nation>
-            nivel4= intent.extras!!.getSerializable("Lista4") as ArrayList<nation>
+            conInternet=intent.extras.getBoolean("conInternet")
+
+            if(conInternet){
+                nombre=SetWordWhitInternet()
+            }else{
+                num = (random.nextInt(final - inicial))+inicial
+                nombre=letter[num]
+            }
         }
 
         if(nombre=="No hay nada"){
             //prueba.text=Palabra
             init(Palabra.length)
         }else{
+            conInternet=true
             nombre=nombre.toUpperCase()
             Palabra=nombre
             init(Palabra.length)
@@ -99,12 +116,21 @@ class MainActivity : Activity(), View.OnClickListener {
             }else{
                 secion=2
             }
+            boton_vs.putExtra("conInternet", conInternet)
+            if(conInternet){
+                boton_vs.putExtra("Lista1",nivel1)
+                boton_vs.putExtra("Lista2",nivel2)
+                boton_vs.putExtra("Lista3",nivel3)
+                boton_vs.putExtra("Lista4",nivel4)
+            }
             boton_vs.putExtra("Pais", nombre)
-            boton_vs.putExtra("Reiniciar", "true")
+            boton_vs.putExtra("Reiniciar", true)
             boton_vs.putExtra("Init", inicial)
             boton_vs.putExtra("End", final)
             boton_vs.putExtra("Score", Tpuntos)
             boton_vs.putExtra("Secion", secion)
+
+
             startActivity(boton_vs)
             finish()
         }
@@ -117,6 +143,27 @@ class MainActivity : Activity(), View.OnClickListener {
             ayudando()
             verificaGano()
         }
+    }
+    fun SetWordWhitInternet():String{
+        if(inicial==15){
+            val num=(Math.random() * nivel1.size).toInt()
+            return nivel1[num].name
+
+        }else if(inicial==30){
+            val num=(Math.random() * nivel2.size).toInt()
+            return nivel1[num].name
+
+        }else if(inicial==45){
+            val num=(Math.random() * nivel3.size).toInt()
+            return nivel1[num].name
+
+        }else if(inicial==60){
+            val num=(Math.random() * nivel4.size).toInt()
+            return nivel1[num].name
+        }else{
+            return "nada"
+        }
+
     }
 
     fun ayudando() {

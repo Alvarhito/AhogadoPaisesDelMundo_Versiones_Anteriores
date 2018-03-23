@@ -74,19 +74,21 @@ class Main2Activity : AppCompatActivity() {
                     //var prueba= Prueba as TextView
 
                     Country.Organizar(data)
-                    nombre= Country.getName(data)
+                    nombre=Country.getName()
                     //
 
                     //Toast.makeText(this,nombre.toString(), Toast.LENGTH_LONG).show()
+                    //val boton_vn = Intent(this, MainActivity::class.java)
+                    //startActivity(boton_vn)
+                    val boton = Intent(this, MainActivity::class.java)
+                    boton.putExtra("Pais", nombre)
+                    boton.putExtra("Reiniciar", false)
+                    boton.putExtra("Lista1",Country.nivel1)
+                    //boton.putExtra("Lista2",Country.nivel2)
+                    //boton.putExtra("Lista3",Country.nivel3)
+                   // boton.putExtra("Lista4",Country.nivel4)
 
-                    val boton_vs = Intent(this, MainActivity::class.java)
-                    boton_vs.putExtra("Pais", nombre)
-                    boton_vs.putExtra("Reiniciar", "false")
-                    boton_vs.putExtra("Lista1",Country.nivel1)
-                    boton_vs.putExtra("Lista2",Country.nivel2)
-                    boton_vs.putExtra("Lista3",Country.nivel3)
-                    boton_vs.putExtra("Lista4",Country.nivel4)
-                    startActivity(boton_vs)
+                    startActivity(boton)
                 }
             }
         }

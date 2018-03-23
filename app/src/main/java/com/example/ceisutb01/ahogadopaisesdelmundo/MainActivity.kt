@@ -4,62 +4,104 @@ import android.os.Bundle
 import android.view.View
 import java.util.Random
 import android.app.Activity
-import android.content.Context
-import android.util.Log
 import android.content.Intent
 import android.widget.*
 import kotlinx.android.synthetic.main.activity_main.*
 
 import android.widget.Button
 import android.widget.TextView
-import com.github.kittinunf.fuel.android.extension.responseJson
-import com.github.kittinunf.fuel.httpGet
-import com.github.kittinunf.result.Result
-import com.github.kittinunf.result.getAs
-import org.json.JSONArray
-import org.json.JSONObject
 
 class MainActivity : Activity(), View.OnClickListener {
 
-    val letter = arrayOf(arrayOf("C", "O", "L", "O", "M", "B", "I", "A"), arrayOf("V", "E", "N", "E", "Z", "U", "E", "L", "A"), arrayOf("A", "F", "G", "A", "N", "I", "S", "T", "A", "N"), arrayOf("A", "N", "G", "O", "L", "A"), arrayOf("A", "L", "B", "A", "N", "I", "A"), arrayOf("B", "A", "N", "G", "L", "A", "D", "E", "S", "H"), arrayOf("B", "U", "L", "G", "A", "R", "I", "A"), arrayOf("C", "A", "M", "E", "R", "U", "N"), arrayOf("C", "H", "I", "P", "R", "E"), arrayOf("E", "T", "I", "O", "P", "I", "A"), arrayOf("F", "I", "L", "I", "P", "I", "N", "A", "S"), arrayOf("G", "U", "A", "T", "E", "M", "A", "L", "A"), arrayOf("J", "O", "R", "D", "A", "N", "I", "A"), arrayOf("K", "E", "N", "Y", "A"), arrayOf("K", "U", "W", "A", "I", "T"), arrayOf("L", "I", "B", "E", "R", "I", "A"), arrayOf("L", "U", "X", "E", "M", "B", "U", "R", "G", "O"), arrayOf("M", "A", "U", "R", "I", "C", "I", "O"), arrayOf("P", "A", "K", "I", "S", "T", "A", "N"), arrayOf("P", "A", "R", "A", "G", "U", "A", "Y"), arrayOf("R", "U", "M", "A", "N", "I", "A"), arrayOf("S", "I", "N", "G", "A", "P", "U", "R"), arrayOf("S", "U", "R", "I", "N", "A", "M"), arrayOf("Y", "U", "G", "O", "S", "L", "A", "V", "I", "A"), arrayOf("M", "O", "Z", "A", "M", "B", "I", "Q", "U", "E"), arrayOf("O", "M", "A", "N"))
-    val numL = arrayOf(8, 9, 10, 6, 7, 10, 8, 7, 6, 7, 9, 9, 8, 5, 6, 7, 10, 8, 8, 8, 7, 8, 7, 10, 10, 4)
-    /*val words= arrayOf(("COLOMBIA")                     ,("VENEZUELA")                        ,("AFGANISTAN")                           ,("ANGOLA")               ,("ALBANIA")                  ,("BANGLADESH")                           ,("BULGARIA")                     ,("CAMERUN")                  ,("CHIPRE")               ,("ETIOPIA")                  ,("FILIPINAS")                        ,("GUATEMALA")                        ,("JORDANIA")                     ,("KENIA")            ,("KUWAIT")               ,("LIBERIA")                  ,("LUXEMBURGO")                           ,("MAURICIO")                     ,("PAKISTAN")                     ,("PARAGUAY")                     ,("RUMANIA")                  ,("SINGAPUR")                     ,("SURINAM")                  ,("YUGOSLAVIA")                           ,("MOZAMBIQUE")                           ,("OMAN")         )*/
+    val letter= arrayOf(("CHAD"),("OMÁN"),("PERÚ"),("NAURU"),("TOGO"),("TONGO"),("TÚNEZ"),("SUIZA"),("SIRIA"),("SAMOA"),("NÍGER"),("NEPAL"),("BENÍN"),("KENIA"),("BUTÁN"),
+                        ("ANGOLA"),("ANDORRA"),("ARMENIA"),("AUSTRIA"),("BAHAMAS"),("BARÉIN"),("BÉLGICA"),("CAMERÚN"),("CANADÁ"),("ECUADOR"),("ESPAÑA"),("GAMBIA"),("KOSOVO"),("KUWAIT"),("POLONIA"),
+                         ("VENEZUELA"),("VATICANO"),("TANZANIA"),("TAILANDIA"),("SUDÁFRICA"),("SINGAPUR"),("PORTUGAL"),("PALESTINA"),("PAKISTÁN"),("NICARAGUA"),("NAMIBIA"),("MONGOLIA"),("MICRONESIA"),("MARRUECOS"),("MALDIVAS"),
+                         ("LIECHTENSTEIN"),("LUXEMBURGO"),("MADAGASCAR"),("MOZAMBIQUE"),("SEYCHELLES"),("TAYIKISTÁN"),("UZBEKISTÁN"),("AFGANISTÁN"),("ARGENTINA"),("BAMGLADESH"),("BIELORRUSIA"),("DINAMARCA"),("ESLOVAQUIA"),("FINLANDIA"),("KIRGUISTÁN"))
+
+    var inicial=0
+    var final=14
+
+    var secion=1
 
     val random = Random()
-    val num = random.nextInt(25 - 0)
+    var num = random.nextInt(final - inicial)
     var textviews = ArrayList<TextView>()
     var termino = 0
     var NumVidas = 7
     var Tpuntos = 0
     var auxPuntos = 5
+    var Palabra=letter[num]
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         var nombre =intent.extras.getString("Pais")
+
         var prueba= Prueba as TextView
-        prueba.text=nombre
-        if(nombre=="No hay nada"){
-            init()
+
+        var reiniciar=intent.extras.getString("Reiniciar")
+
+        if(reiniciar=="true"){
+            inicial=intent.extras.getInt("Init")
+            final=intent.extras.getInt("End")
+            Tpuntos=intent.extras.getInt("Score")
+            secion=intent.extras.getInt("Secion")
+
+            var puntitos = Puntos as TextView
+            puntitos.text = "Puntos: " + Tpuntos.toString()
+            prueba.text=Tpuntos.toString()
+
+
+            num = (random.nextInt(final - inicial))+inicial
+            nombre=letter[num]
+
         }
-        Log.d("debug", "Inicio")
+
+        if(nombre=="No hay nada"){
+            //prueba.text=Palabra
+            init(Palabra.length)
+        }else{
+            nombre=nombre.toUpperCase()
+            Palabra=nombre
+            init(Palabra.length)
+            //prueba.text=nombre
+
+        }
         setBtn()
 
         Menu2.setOnClickListener {
             val boton_vs = Intent(this, Main2Activity::class.java)
             startActivity(boton_vs)
-            super.onDestroy()
+            finish()
         }
         Menu.setOnClickListener {
             val boton_vs = Intent(this, Main2Activity::class.java)
             startActivity(boton_vs)
-            super.onDestroy()
+            finish()
+        }
+        Siguente.setOnClickListener {
+
+            val boton_vs = Intent(this, MainActivity::class.java)
+            if(secion==2){
+                inicial=final+1
+                final=inicial+14
+                secion=1
+            }else{
+                secion=2
+            }
+            boton_vs.putExtra("Pais", nombre)
+            boton_vs.putExtra("Reiniciar", "true")
+            boton_vs.putExtra("Init", inicial)
+            boton_vs.putExtra("End", final)
+            boton_vs.putExtra("Score", Tpuntos)
+            boton_vs.putExtra("Secion", secion)
+            startActivity(boton_vs)
+            finish()
         }
         Reiniciar.setOnClickListener {
-            val boton_vs = Intent(this, MainActivity::class.java)
-            startActivity(boton_vs)
-            super.onDestroy()
+            finish()
+            //m.selectPais()
         }
         Ayuda.setOnClickListener {
             Ayuda.isEnabled = false
@@ -69,32 +111,31 @@ class MainActivity : Activity(), View.OnClickListener {
     }
 
     fun ayudando() {
-        print("hola mundo")
         val ra = Random()
-        var VRam = ra.nextInt((numL[num] - 1) - 0)
+        var VRam = ra.nextInt((Palabra.length - 1) - 0)
         //var VRam=numL[num]-1
 
         var aux = true
         while (aux) {
             aux = false
-            for (i in 0..numL[num] - 1) {
+            for (i in 0..Palabra.length - 1) {
                 //Log.d("TextView",textviews[i].text.toString())
-                if (textviews[i].getText().toString() == letter[num][VRam] + " ") {
+                if (textviews[i].getText().toString() == Palabra[VRam] + " ") {
                     aux = true
-                    VRam = ra.nextInt((numL[num] - 1) - 0)
+                    VRam = ra.nextInt((Palabra.length - 1) - 0)
                     break;
                 }
 
             }
         }
-        textviews[VRam].text = letter[num][VRam] + " "
+        textviews[VRam].text = Palabra[VRam] + " "
         termino += 1
     }
 
-    fun init() {
+    fun init(number: Int) {
 
         val For_Letter = ForLetter as LinearLayout
-        for (i in 0..numL[num] - 1) {
+        for (i in 0..number - 1) {
             val tv_dynamic = TextView(this)
             tv_dynamic.textSize = 30f
             tv_dynamic.text = "__ "
@@ -109,14 +150,23 @@ class MainActivity : Activity(), View.OnClickListener {
         val b = v as Button
         v.isEnabled = false
         var entro = false
-        for (i in 0..numL[num] - 1) {
-            if (b.getText().toString() == letter[num][i]) {
-                if (textviews[i].getText().toString() != b.getText().toString() + " ") {
-                    textviews[i].text = b.getText().toString() + " "
+        var conta=0
+
+       // var prueba= Prueba as TextView
+        //prueba.text=""
+
+        for (i in Palabra) {
+
+            //prueba.text =prueba.getText().toString() + i.toString()+" "+b.getText().toString()
+
+            if (b.getText().toString() == i.toString() || setToTilde(b.getText().toString())==i.toString()) {
+                if (textviews[conta].getText().toString() != b.getText().toString() + " ") {
+                    textviews[conta].text = i + " "
                     entro = true
                     termino += 1
                 }
             }
+            conta+=1
         }
         if (entro == false) {
             verificaPerdio()
@@ -139,35 +189,52 @@ class MainActivity : Activity(), View.OnClickListener {
             val venI = VenI as ImageView
             venI.visibility = View.VISIBLE
             loseL.visibility = View.VISIBLE
-            Buttonoff()
+            Buttonoff(false)
         }
     }
 
     fun verificaGano() {
-        if (termino == numL[num]) {
+        if (termino == Palabra.length) {
             val winL = youwintext as TextView
             val venI = VenI as ImageView
+
             venI.visibility = View.VISIBLE
             winL.visibility = View.VISIBLE
-            Buttonoff()
+
+            var prueba= Prueba as TextView
+            prueba.text=(final+1).toString()
+
+            auxPuntos = ((final+1)/15)*(50)
+            Tpuntos=Tpuntos+auxPuntos
+            var puntitos = Puntos as TextView
+            puntitos.text = "Puntos: " + Tpuntos.toString()
+
+            Buttonoff(true)
         }
     }
 
-    fun Buttonoff() {
+    fun Buttonoff(gano: Boolean) {
         val menu = Menu as Button
         val ayuda = Ayuda as Button
-        val For_Letterabc = LetrasABC as LinearLayout
+        val For_Letterabc = Vocales as LinearLayout
+        val For_Letterabc2 = LetrasABC as LinearLayout
 
         val menu2 = Menu2 as Button
+        val sigieunte = Siguente as Button
         val reiniciar = Reiniciar as Button
 
         menu.visibility = View.INVISIBLE
         ayuda.visibility = View.INVISIBLE
 
         menu2.visibility = View.VISIBLE
-        reiniciar.visibility = View.VISIBLE
+        if(gano) {
+            sigieunte.visibility = View.VISIBLE
+        }else{
+            reiniciar.visibility=View.VISIBLE
+        }
 
         For_Letterabc.visibility = View.INVISIBLE
+        For_Letterabc2.visibility = View.INVISIBLE
     }
 
     fun setBtn() {
@@ -197,5 +264,16 @@ class MainActivity : Activity(), View.OnClickListener {
         buttonX.setOnClickListener(this)
         buttonY.setOnClickListener(this)
         buttonZ.setOnClickListener(this)
+    }
+
+    fun setToTilde(l:String):String{
+        val abecedario: HashMap<String, String> = hashMapOf("A" to "Á", "B" to "B",
+                "C" to "C", "D" to "D", "E" to "É", "F" to "F", "G" to "G", "H" to "H",
+                "I" to "Í", "J" to "J", "K" to "K", "L" to "L", "M" to "M", "N" to "N",
+                "Ñ" to "Ñ", "O" to "Ó", "P" to "P", "Q" to "Q", "R" to "R","S" to "S",
+                "T" to "T", "U" to "Ú", "V" to "V", "W" to "W", "X" to "X","Y" to "Y",
+                "Z" to "Z")
+        return abecedario[l].toString()
+
     }
 }

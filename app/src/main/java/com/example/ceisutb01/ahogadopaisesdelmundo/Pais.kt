@@ -11,18 +11,75 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONArray
 
-
+class nation{
+    var name=""
+    var flag=""
+    var capital=""
+    var region=""
+}
 class Pais {
-
-    private var name: String? = null
-    private var front_default_url: String? = null
-    private var back_default_url: String? = null
-    private var info_Sprites: JSONObject? = null
+    var nivel1 = ArrayList<nation>()
+    var nivel2 = ArrayList<nation>()
+    var nivel3 = ArrayList<nation>()
+    var nivel4 = ArrayList<nation>()
 
     private var image: JSONObject = JSONObject()
     private var pais:String= String()
 
+    fun Organizar(info: Json){
+        var aux: JSONObject = JSONObject()
+
+        var tamaño=0
+
+        var i1=0
+        var i2=1
+        var i3=2
+        var i4=3
+        while(true){
+            var aux: JSONObject = JSONObject()
+            aux=info.array().getJSONObject(i1)
+            try {
+
+                var paisAux= nation()
+                paisAux.name=aux.getJSONObject("translations").getString("es")
+                if(!paisAux.name.contains(" ") && !paisAux.name.contains("-")) {
+
+                    //aux=info.array().getJSONObject(i2)
+                    paisAux.flag = aux.getString("flag")
+
+                    //aux=info.array().getJSONObject(i3)
+                    paisAux.capital = aux.getString("capital")
+
+                    //aux=info.array().getJSONObject(i3)
+                    paisAux.region = aux.getString("region")
+
+                    tamaño = paisAux.name.length
+                    if (tamaño <= 5) {
+                        nivel1.add(paisAux)
+                    } else if (tamaño > 5 && tamaño <= 7) {
+                        nivel2.add(paisAux)
+                    } else if (tamaño > 7 && tamaño <= 9) {
+                        nivel3.add(paisAux)
+                    } else if (tamaño > 9) {
+                        nivel4.add(paisAux)
+                    }
+                }
+            }catch (e: JSONException){
+                e.printStackTrace()
+            }
+            i1+=1
+            //i2+=4
+            //i3+=4
+            //i4+=4
+            if(i1>=250){
+                break
+            }
+        }
+        i4=0
+
+    }
     fun getName(info: Json): String {
+
         try {
             while(true){
 

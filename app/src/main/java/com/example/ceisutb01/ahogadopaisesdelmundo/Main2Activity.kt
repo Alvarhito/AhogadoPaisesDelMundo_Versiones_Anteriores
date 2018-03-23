@@ -34,7 +34,8 @@ class Main2Activity : AppCompatActivity() {
         //val ran = (Math.random() * 500).toInt()
         //val url="https://en.wikipedia.org/w/api.php?action=opensearch&format=json&search=Paises%20Bajos%20del%20Sur"
         //val url="https://restcountries.eu/rest/v2/all"
-        val url = "https://restcountries.eu/rest/v2/all?fields=translations"
+        //val url = "https://restcountries.eu/rest/v2/all?fields=translations"
+        val url="https://restcountries.eu/rest/v2/all?fields=translations;capital;region;flag"
         //val url = "https://pokeapi.co/api/v2/pokemon/" + "15"
         getJson(url)
 
@@ -64,19 +65,23 @@ class Main2Activity : AppCompatActivity() {
 
                     val boton_vs = Intent(this, MainActivity::class.java)
                     boton_vs.putExtra("Pais", nombre)
+                    boton_vs.putExtra("Reiniciar", "false")
                     startActivity(boton_vs)
                 }
                 is Result.Success -> {
                     val data = result.get()
                     Log.d("data", data.toString())
                     //var prueba= Prueba as TextView
+
+                    Country.Organizar(data)
                     nombre= Country.getName(data)
                     //
 
-                    Toast.makeText(this,nombre.toString(), Toast.LENGTH_LONG).show()
+                    //Toast.makeText(this,nombre.toString(), Toast.LENGTH_LONG).show()
 
                     val boton_vs = Intent(this, MainActivity::class.java)
                     boton_vs.putExtra("Pais", nombre)
+                    boton_vs.putExtra("Reiniciar", "false")
                     startActivity(boton_vs)
                 }
             }
